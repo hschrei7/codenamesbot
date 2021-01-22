@@ -51,29 +51,36 @@ def generateClues(model, words_cleaned):
 
 
 def printClues(lst, num_cards):
+    counter = 0
     text = ""
     st.write("Your best " + str(num_cards) + " card clues (a score above 0.6 is very good) :\n")
+    st.markdown("---")
     for i in lst:
-        if len(i[0]) == num_cards:
-            if i[2] > 0.2:  # change if computer getting wonky
-                st.write("similarity score: " + str(round(i[2], 4)))
-                st.write("clue: " + str(i[1]))
-                list_as_string = ""
-                for card in i[0]:
-                    list_as_string = list_as_string + card + ", "
-                list_as_string = list_as_string[:len(list_as_string) - 2]
-                st.write("cards targeted: " + list_as_string)
-                st.write("")
+        if counter < 10:
+            if len(i[0]) == num_cards:
+                if i[2] > 0.2:  # change if computer getting wonky
+                    st.markdown("**Similarity score:** " + str(round(i[2], 3)))
+                    st.markdown("**Clue: **" + str(i[1]))
+                    list_as_string = ""
+                    for card in i[0]:
+                        list_as_string = list_as_string + card + ", "
+                    list_as_string = list_as_string[:len(list_as_string) - 2]
+                    st.markdown("**Cards Targeted: **" + list_as_string)
+                    st.markdown("---")
+                    counter = counter + 1
 
 @st.cache(allow_output_mutation=True)
 def load_model():
-    with st.spinner('Downloading word2vec model... please hold (takes 5 minutes)'):
+    with st.spinner('Downloading model... please hold... (sry this can take like 2-5 minutes)'):
         model = api.load('word2vec-google-news-300')
     return model
 
 
 def main():
-    st.title('Codenames Bot')
+    st.markdown('<style>h1{font-family: "Rockwell";text-align: center;}</style>', unsafe_allow_html=True)
+    st.title('CODENAMES BOT')
+    st.markdown("Welcome to Codenames Bot! Once the model has finished downloading, simply input your remaining cards into the machine, select the number of cards you'd like to target, and push the button to generate potential clues!")
+    #st.video('https://www.youtube.com/watch?v=z6-gBN2xp74', format='video/mp4', start_time=0)
     model = load_model()
     st.success('Done!')
     
@@ -93,7 +100,7 @@ def main():
         if i == "":
             continue
         else:
-            words_cleaned.append(i)
+            words_cleaned.append(i.lower())
     if st.button("Generate Clues"):
         lst = generateClues(model, words_cleaned)
         printClues(lst, num_cards)
