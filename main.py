@@ -24,7 +24,7 @@ def generateClues(model, words_cleaned):
         master.append(i)
         test = model.most_similar(
             positive=i,
-            restrict_vocab=75000,
+            restrict_vocab=10000,
             topn=10
         )
         results = []
@@ -72,7 +72,7 @@ def printClues(lst, num_cards):
 @st.cache(allow_output_mutation=True)
 def load_model():
     with st.spinner('Downloading model... please hold... (sry this can take like 2-5 minutes)'):
-        model = api.load('word2vec-google-news-300')
+        model = api.load("glove-wiki-gigaword-50")
     return model
 
 
